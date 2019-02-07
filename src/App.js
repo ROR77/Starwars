@@ -4,8 +4,10 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import ReactDOM from "react-dom";
 import Character from "./Character";
 import Header from "./Header";
+import SortRadioButton from './SortRadioButton';
  import axios from 'axios';
 import './App.css';
+// import Skywalker from '../images/Luke Skywalker.jpg';
 
 
 class Home extends React.Component{
@@ -66,8 +68,12 @@ class App extends Component {
         super(props)
         this.state = {
               // character: {}
-              characters: []
-         };
+              characters: [],
+               searchTerm: '',
+                alphabetical: 'az'
+                };
+              this.handleChange = this.handleChange.bind(this);
+
     }
 
     componentDidMount() {
@@ -80,12 +86,80 @@ class App extends Component {
               // console.log('character')
                 this.setState({characters: response.data.results});
              })
+             .catch(error => {
+             console.log(error);
+         });
     }
 
+    handleChange(event) {
+   const target = event.target;
+   const value = target.type === 'checkbox' ? target.checked : target.value;
+   const name = target.name;
+
+   this.setState({
+     [name]: value
+   });
+ }
+
     render() {
+      let sortedUsers;
+
+     if (this.state.alphabetical === "az") {
+        sortedUsers = this.state.characters.sort((a, b) =>
+        a.name.first > b.name.first ? 1 : -1
+     );
+    } else {
+     sortedUsers = this.state.characters.sort((a, b) =>
+     a.name.first < b.name.first ? 1 : -1
+     );
+  }
+
+  let filteredUsers = sortedUsers;
+
+  if (this.state.searchTerm)
+    filteredUsers = this.state.characters.filter(u =>
+      u.name.startsWith(this.state.searchTerm)
+    );
+
+    const userNames = filteredUsers.map(u => {
+      return <Character key={u.name} name={u.name} height={u.height} weight={u.mass} />;
+ });
+
+ return (
+   <div>
+     <form onSubmit={this.handleSubmit}>
+       <label>
+         Search for character:
+         <input
+           type="text"
+           name="searchTerm"
+           value={this.state.searchTerm}
+           onChange={this.handleChange}
+         />
+       </label>
+       <input type="submit" value="Submit" />
+     </form>
+     <select
+       name="alphabetical"
+       value={this.state.alphabetical}
+       onChange={this.handleChange}
+     >
+       <option value="az">
+         A to Z
+       </option>
+       <option value="za">Z to A</option>
+     </select>
+
+     {userNames}
+
+   </div>
+ )
 
            const characterList = this.state.characters.map(c => (
              <Character
+
+             // return  <img src={Skywalker}/>
+
                key={c.name}
                name={c.name}
                height={c.height}

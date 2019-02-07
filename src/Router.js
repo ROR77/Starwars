@@ -2,6 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom';
 import {BrowserRouter, Route, Link } from 'react-router-dom';
 
+const {
+  BrowserRouter,
+  Route,
+  Link
+} = ReactRouterDOM
+
 const Home = () => (
   <div>
     <h2>Home</h2>
@@ -20,7 +26,7 @@ const Contact = () => (
   </div>
 );
 
-const Routes = () => (
+const BasicExample = () => (
   <BrowserRouter>
     <div>
       <ul>
@@ -40,6 +46,6 @@ const Routes = () => (
 )
 
 ReactDOM.render(
-  <Routes />,
+  <BasicExample />,
   document.getElementById('root')
 );
